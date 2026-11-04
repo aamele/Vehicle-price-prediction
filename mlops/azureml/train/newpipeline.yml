@@ -1,8 +1,8 @@
 $schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
 type: pipeline
-display_name: ________-_________-___________  # Provide the display name for the pipeline
-experiment_name: ________-________-__________  # Provide the experiment name
-description: ____________-__________-______-____________-______  # Provide the description for the pipeline
+display_name: Used Cars Price - Prep, Sweep & Register  # Provide the display name for the pipeline
+experiment_name: used-cars-price-pipeline  # Provide the experiment name
+description: Read Used_cars.csv, Label-encodes  Segment, Splits train/test, tunes a Random Forest and register the best model  # Provide the description for the pipeline
 
 inputs:
   raw_data:
@@ -11,11 +11,11 @@ inputs:
 
 outputs:
   train_data:
-    type: _______  # Specify the type for train_data output
+    type: uri_folder  # Specify the type for train_data output
   test_data:
-    type: _______  # Specify the type for test_data output
+    type: uri_folder  # Specify the type for test_data output
   model_info_output_path:
-    type: _______  # Specify the type for model_info_output_path output
+    type: uri_folder  # Specify the type for model_info_output_path output
 
 settings:
   default_datastore: azureml:workspaceblobstore
@@ -24,8 +24,8 @@ settings:
 
 jobs:
   prep_data:
-    name: ________  # Provide the job name
-    display_name: ________-________  # Provide the display name for the job
+    #name: data-preparation  # Provide the job name
+    display_name: data-Preparation  # Provide the display name for the job
     code: ../../../data-science/src
     command: >-
       python prep.py  
@@ -35,13 +35,14 @@ jobs:
     environment: azureml:used-cars-train-env@latest
     inputs:
       raw_data: ${{parent.inputs.raw_data}}
+      test_train_ratio: ${{parent.inputs.test_train_ratio}}
     outputs:
       train_data: ${{parent.outputs.train_data}}
       test_data: ${{parent.outputs.test_data}}
 
   sweep_step:
-    name: _______
-    display_name: ________-______  # Hint: Provide the display name for the job
+    #name: model training
+    display_name: train-hyperparameter-tuning  # Hint: Provide the display name for the job
     type: sweep
     inputs:
       train_data: ${{parent.jobs.prep_data.outputs.train_data}}
@@ -49,15 +50,15 @@ jobs:
     outputs:
       model_output:
         type: mlflow_model
-    sampling_algorithm: ______  # Specify the sampling algorithm
+    sampling_algorithm: random  # Specify the sampling algorithm
     trial: ./train.yml  # Refers to a separate command component
     search_space:
       n_estimators:
         type: choice
         values: [10, 20, 30, 50]
       max_depth:
-        type: _______  # Specify the type for max_depth
-        values: _______  # Provide the values for max_depth
+        type: choice  # Specify the type for max_depth
+        values: [5,10,15,20]  # Provide the values for max_depth
     objective:
       goal: minimize
       primary_metric: MSE
@@ -68,8 +69,8 @@ jobs:
 
 
   register_model:
-    name: _________  # Provide the job name
-    display_name: ________-_______  # Provide the display name for the job
+    #name: register-used-cars-price-model  # Provide the job name
+    display_name: register-used-cars-price_model  # Provide the display name for the job
     code: ../../../data-science/src
     command: >-
       python register.py 

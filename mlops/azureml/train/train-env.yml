@@ -1,6 +1,6 @@
 $schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
 
 name: used-cars-train-env  # Provide the name for the environment
-image: mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04
+image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu22.04:latest
 conda_file: ../../../data-science/environment/train-conda.yml
-description: ___________________ # Provide the name for the environment
+description: Training environment for the used-cars price pipeline (Docker image plus Conda dependencies) # Provide the name for the environment

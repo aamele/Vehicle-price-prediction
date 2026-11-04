@@ -2,9 +2,9 @@
 variables:
 
   # Global
-  ap_vm_image: ubuntu-20.04
+  ap_vm_image: ubuntu-22.04
 
-  namespace: demoworkspace # Updated namespace
+  namespace: asrumlops # Updated namespace
   postfix: 001 # Updated postfix
   location: eastus # Updated location
 

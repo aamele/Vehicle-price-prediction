@@ -19,4 +19,4 @@ variables:
 
   # For pipeline reference
   resource_group: asrat-mlops #<enter-your-resource-group-name>
-  aml_workspace: <enter-your-aml-workspace-name>
+  aml_workspace: asru-azureml #<enter-your-aml-workspace-name>

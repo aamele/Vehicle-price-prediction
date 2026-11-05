@@ -8,6 +8,7 @@ inputs:
   raw_data:
     type: uri_file
     path: azureml:used-cars-data@latest
+    test_train_ratio: 0.2
 
 outputs:
   train_data:

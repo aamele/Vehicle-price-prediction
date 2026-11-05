@@ -42,7 +42,7 @@ def main(args):
     X_test = test_df.drop(columns=['price'])
 
     # Initialize and train a RandomForest Regressor
-    model = RandomForestRegressor(n_estimators=args.n_estimators, max_depth=args.______, random_state=42)  # Provide the arguments for RandomForestRegressor
+    model = RandomForestRegressor(n_estimators=args.n_estimators, max_depth=args.max_depth, random_state=42)  # Provide the arguments for RandomForestRegressor
     model.fit(X_train, y_train)  # Train the model
 
     # Log model hyperparameters

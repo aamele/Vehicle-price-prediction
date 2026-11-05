@@ -2,9 +2,6 @@
 
 An end-to-end MLOps project that predicts the price of used cars with a Random Forest regressor. Every push to `main` triggers a GitHub Actions workflow that registers the data and environment in Azure Machine Learning, then runs a pipeline that prepares the data, tunes the model's hyperparameters, and registers the best model.
 
-![GitHub Actions](https://github.com/aamele/Vehicle-price-prediction/actions/workflows/train-AzureML-pipeline.yml/badge.svg)
-
----
 
 ## Table of contents
 
@@ -17,8 +14,6 @@ An end-to-end MLOps project that predicts the price of used cars with a Random F
 - [Setup](#setup)
 - [Running the pipeline](#running-the-pipeline)
 - [Viewing results](#viewing-results)
-- [Configuration reference](#configuration-reference)
-- [Troubleshooting](#troubleshooting)
 - [Next steps](#next-steps)
 
 ---

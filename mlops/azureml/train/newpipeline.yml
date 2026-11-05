@@ -8,7 +8,7 @@ inputs:
   raw_data:
     type: uri_file
     path: azureml:used-cars-data@latest
-    test_train_ratio: 0.2
+  test_train_ratio: 0.2
 
 outputs:
   train_data:
@@ -32,7 +32,8 @@ jobs:
       python prep.py  
       --raw_data ${{inputs.raw_data}} 
       --train_data ${{outputs.train_data}}
-      --test_data ${{outputs.test_data}} 
+      --test_data ${{outputs.test_data}}
+      --test_train_ratio ${{inputs.test_train_ratio}}
     environment: azureml:used-cars-train-env@latest
     inputs:
       raw_data: ${{parent.inputs.raw_data}}

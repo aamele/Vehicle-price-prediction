@@ -1,27 +1,15 @@
-# This workflow will build a train model and deploy it to an Azure Functions App on Linux when a commit is pushed to your default branch.
+# Trains the used-car price model in Azure ML.
+# Runs on every push to main, or manually from the Actions tab ("Run workflow").
 #
-# This workflow assumes you have already created the target Azure ML.
-# For instructions see https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python?pivots=python-mode-configuration
-#
-# To configure this workflow:
-# 1. Set up the following secrets in your repository:
-#   - AZURE_FUNCTIONAPP_PUBLISH_PROFILE
-# 2. Change env variables for your configuration.
-#
-# For more information on:
-#   - GitHub Actions for Azure: https://github.com/Azure/Actions
-#   - Azure Functions Action: https://github.com/Azure/functions-action
-#   - Publish Profile: https://github.com/Azure/functions-action#using-publish-profile-as-deployment-credential-recommended
-#   - Azure Service Principal for RBAC: https://github.com/Azure/functions-action#using-azure-service-principal-for-rbac-as-deployment-credential
-#
-# For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples/tree/master/FunctionApp
+# Requires one repository secret:
+#   AZURE_CREDENTIALS_AA - JSON output of `az ad sp create-for-rbac ... --json-auth`
 
 name: Train model in Azure ML
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:      # adds a "Run workflow" button on GitHub
+  workflow_dispatch:
 
 env:
   RESOURCE_GROUP: asrat-mlops
@@ -38,13 +26,22 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_AA }}
 
-      - name: Install Azure ML CLI
-        run: az extension add -n ml -y
+      - name: Install Azure ML CLI and set defaults
+        run: |
+          az extension add -n ml -y
+          az configure --defaults group=$RESOURCE_GROUP workspace=$WORKSPACE
+
+      - name: Create compute cluster (if missing)
+        run: |
+          az ml compute show --name cpu-cluster >/dev/null 2>&1 || \
+            az ml compute create --name cpu-cluster --type amlcompute \
+              --size Standard_A2_v2 --min-instances 0 --max-instances 2
+
+      - name: Register dataset
+        run: az ml data create --file mlops/azureml/train/data.yml --version $(date +%Y%m%d%H%M%S)
+
+      - name: Register environment
+        run: az ml environment create --file mlops/azureml/train/train-env.yml --version $(date +%Y%m%d%H%M%S)
 
       - name: Run training pipeline
-        run: |
-          az ml job create \
-            --file mlops/azureml/train/newpipeline.yml \
-            --resource-group $RESOURCE_GROUP \
-            --workspace-name $WORKSPACE \
-            --stream
+        run: az ml job create --file mlops/azureml/train/newpipeline.yml --stream

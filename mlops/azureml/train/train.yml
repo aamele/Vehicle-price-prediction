@@ -8,10 +8,10 @@ inputs:
   test_data:
     type: uri_folder  # Specify the type for test_data
   n_estimators:
-    type: int  # Specify the type for n_estimators
+    type: integer  # Specify the type for n_estimators
     default: 100  # Provide the default value for n_estimators
   max_depth:
-    type: int  # Specify the type for max_depth
+    type: integer  # Specify the type for max_depth
     default: 20  # Provide the default value for max_depth
 outputs:
   model_output:

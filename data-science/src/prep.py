@@ -31,7 +31,7 @@ def main(args):  # Write the function name for the main data preparation logic
     df = pd.read_csv(args.raw_data)
 
     # Clean the categorical feature so spacing/capitalisation differences don't create new categories
-    df['Segment'] = df['segment'].str.strip().str.lower()
+    df['Segment'] = df['Segment'].str.strip().str.lower()
 
     # Encode categorical feature
     le = LabelEncoder()
